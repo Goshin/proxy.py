@@ -363,10 +363,17 @@ class Proxy(multiprocessing.Process):
         if self.request.state == HTTP_PARSER_STATE_COMPLETE:
             logger.debug('request parser is in state complete')
             
-            if self.request.method == b"CONNECT":
-                host, port = self.request.url.path.split(COLON)
-            elif self.request.url:
-                host, port = self.request.url.hostname, self.request.url.port if self.request.url.port else 80
+            '''
+                if self.request.method == b"CONNECT":
+                    host, port = self.request.url.path.split(COLON)
+                elif self.request.url:
+                    host, port = self.request.url.hostname, self.request.url.port if self.request.url.port else 80
+            '''
+
+            try:
+                host, port = self.request.headers[b'host'][1].split(":")
+            except:
+                host, port = self.request.headers[b'host'][1], 80
             
             self.server = Server(host, port)
             try:
