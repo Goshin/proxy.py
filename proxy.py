@@ -9,6 +9,9 @@
     :copyright: (c) 2013 by Abhinav Singh.
     :license: BSD, see LICENSE for more details.
 """
+
+PROXY_KEY = '123456'
+
 VERSION = (0, 2)
 __version__ = '.'.join(map(str, VERSION[0:2]))
 __description__ = 'HTTP Proxy Server in Python'
@@ -374,7 +377,15 @@ class Proxy(multiprocessing.Process):
                 host, port = self.request.headers[b'host'][1].split(":")
             except:
                 host, port = self.request.headers[b'host'][1], 80
-            
+
+            try:
+                key = self.request.headers[b'key'][1].decode('utf-8')
+                logger.error('key: ' + key)
+                if key != PROXY_KEY:
+                    raise ProxyConnectionFailed(host, port, 'wrong key')
+            except Exception as e:
+                raise ProxyConnectionFailed(host, port, repr(e))
+
             self.server = Server(host, port)
             try:
                 logger.debug('connecting to server %s:%s' % (host, port))
