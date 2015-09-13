@@ -380,7 +380,6 @@ class Proxy(multiprocessing.Process):
 
             try:
                 key = self.request.headers[b'key'][1].decode('utf-8')
-                logger.error('key: ' + key)
                 if key != PROXY_KEY:
                     raise ProxyConnectionFailed(host, port, 'wrong key')
             except Exception as e:
