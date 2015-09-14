@@ -11,6 +11,7 @@
 """
 
 PROXY_KEY = '123456'
+PROXY_KEY_NAME = b'key'
 
 VERSION = (0, 2)
 __version__ = '.'.join(map(str, VERSION[0:2]))
@@ -379,7 +380,7 @@ class Proxy(multiprocessing.Process):
                 host, port = self.request.headers[b'host'][1], 80
 
             try:
-                key = self.request.headers[b'key'][1].decode('utf-8')
+                key = self.request.headers[PROXY_KEY_NAME][1].decode('utf-8')
                 if key != PROXY_KEY:
                     raise ProxyConnectionFailed(host, port, 'wrong key')
             except Exception as e:
