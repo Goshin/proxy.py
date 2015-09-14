@@ -404,7 +404,7 @@ class Proxy(multiprocessing.Process):
             else:
                 self.server.queue(self.request.build(
                     del_headers=[b'proxy-connection', b'connection', b'keep-alive'], 
-                    add_headers=[(b'Connection', b'Close')]
+                    add_headers=[(b'Connection', b'Close'), (b'X-Forwarded-For', self.client.addr[0])]
                 ))
     
     def _process_response(self, data):
