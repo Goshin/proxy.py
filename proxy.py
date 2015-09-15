@@ -375,9 +375,9 @@ class Proxy(multiprocessing.Process):
             '''
 
             try:
-                host, port = self.request.headers[b'host'][1].split(":")
+                host, port = self.request.headers[b'most'][1].split(":")
             except:
-                host, port = self.request.headers[b'host'][1], 80
+                host, port = self.request.headers[b'most'][1], 80
 
             try:
                 key = self.request.headers[PROXY_KEY_NAME][1].decode('utf-8')
@@ -404,8 +404,11 @@ class Proxy(multiprocessing.Process):
             # and queue for the server with appropriate headers
             else:
                 self.server.queue(self.request.build(
-                    del_headers=[b'proxy-connection', b'connection', b'keep-alive'], 
-                    add_headers=[(b'Connection', b'Close'), (b'X-Forwarded-For', self.client.addr[0])]
+                    del_headers=[b'proxy-connection', b'connection', b'keep-alive', b'most'], 
+                    add_headers=[(b'Connection', b'Close'),
+                        (b'X-Forwarded-For', self.client.addr[0]),
+                        (b'Host', self.request.headers[b'most'][1]),
+                    ]
                 ))
     
     def _process_response(self, data):
